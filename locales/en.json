@@ -1,0 +1,9 @@
+{
+  "messagePrompt": "Send a message",
+  "pleaseWait": "Sending, please wait!",
+  "notAllowed": "Not allowed",
+  "notFound": "Not found",
+  "somethingBroke": "Something broke",
+  "backToChat": "Back to chat!",
+  "pageTitle": "Continuation"
+}
