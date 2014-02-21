@@ -23,7 +23,7 @@ module.exports = function (app, nconf, io) {
     });
   };
 
-  var emitChat = function (socket, chat) {
+  var emitChat = function (socket, channel, chat) {
     socket.emit('message', { chat: chat });
   };
 
@@ -37,8 +37,8 @@ module.exports = function (app, nconf, io) {
     });
   });
 
-  var addChat = function (message, picture, fingerprint, userId, ip, next) {
-    diphenhydramine.addChat(message.slice(0, 250), {
+  var addChat = function (channel, message, picture, fingerprint, userId, ip, next) {
+    diphenhydramine.addChat(message.slice(0, 250), channel, {
       ttl: 600000,
       media: picture,
       fingerprint: userId
@@ -47,7 +47,7 @@ module.exports = function (app, nconf, io) {
         next(err);
       } else {
         try {
-         emitChat(io.sockets, { key: c.key, value: c });
+          emitChat(io.sockets, channel, { key: c.key, value: c });
           next(null, 'sent!');
         } catch (err) {
           next(new Error('Could not emit message'));
@@ -60,13 +60,13 @@ module.exports = function (app, nconf, io) {
     return crypto.createHash('md5').update(fingerprint + ip).digest('hex');
   };
 
-  app.post('/add/chat', function (req, res, next) {
+  app.post('/:channel/add/chat', function (req, res, next) {
     var ip = req.ip;
     var userId = getUserId(req.body.fingerprint, ip);
 
     if (req.body.picture) {
       if ((userId === req.body.userid) || req.isApiUser) {
-        addChat(req.body.message, req.body.picture, req.body.fingerprint, userId, ip, function (err, status) {
+        addChat(req.params.channel, req.body.message, req.body.picture, req.body.fingerprint, userId, ip, function (err, status) {
           if (err) {
             res.status(400);
             res.json({ error: err.toString() });
