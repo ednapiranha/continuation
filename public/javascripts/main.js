@@ -2,10 +2,6 @@ define(['jquery', './base/transform', 'gumhelper', './base/videoShooter', 'finge
   function ($, transform, gumHelper, VideoShooter, Fingerprint, md5, moment, Favico) {
   'use strict';
 
-  if (/liveDebug/.test(window.location.search)) {
-    window.liveDebug = true;
-  }
-
   var videoShooter;
 
   var CHAT_LIMIT = 25;
@@ -80,12 +76,6 @@ define(['jquery', './base/transform', 'gumhelper', './base/videoShooter', 'finge
     return mutes.indexOf(fingerprint) !== -1;
   };
 
-  var debug = function () {
-    if (window.liveDebug) {
-      console.log.apply(console, arguments);
-    }
-  };
-
   var setWaypoint = function (node) {
     var li = $(node);
     li.waypoint(function (direction) {
@@ -102,13 +92,6 @@ define(['jquery', './base/transform', 'gumhelper', './base/videoShooter', 'finge
   };
 
   var render = function (incoming) {
-    debug("Rendering chat: key='%s' fingerprint='%s' message='%s' created='%s' imageMd5='%s'",
-      incoming.key,
-      incoming.value.fingerprint,
-      incoming.value.message,
-      incoming.value.created,
-      md5(incoming.value.media));
-
     var fingerprint = incoming.value.fingerprint;
 
     if (!isMuted(fingerprint)) {
@@ -156,8 +139,6 @@ define(['jquery', './base/transform', 'gumhelper', './base/videoShooter', 'finge
           chat.list.append(li);
           setWaypoint(li);
 
-          debug('Appended incoming %s', incoming.key);
-
           // if scrolled to bottom of window then scroll the new thing into view
           // otherwise, you are reading the history... allow user to scroll up.
           if (follow) {
@@ -189,7 +170,6 @@ define(['jquery', './base/transform', 'gumhelper', './base/videoShooter', 'finge
     if (videoShooter) {
       videoShooter.getShot(callback, numFrames, interval, progressCallback);
     } else {
-      debug('Failed to install videoShooter');
       callback('');
     }
   };
@@ -253,15 +233,8 @@ define(['jquery', './base/transform', 'gumhelper', './base/videoShooter', 'finge
 
   body.on('click', '#unmute, #tnc-accept', function (ev) {
     if (ev.target.id === 'unmute') {
-      debug('clearing mutes');
       localStorage.removeItem('muted');
       mutes = [];
-    }
-
-    if (ev.target.id === 'tnc-accept') {
-      debug('accepting terms');
-      localStorage.setItem('terms', true);
-      terms.removeClass('on');
     }
   }).on('keydown', function (ev) {
     if (!hasModifiersPressed(ev) && ev.target !== composer.message[0]) {
@@ -274,7 +247,6 @@ define(['jquery', './base/transform', 'gumhelper', './base/videoShooter', 'finge
     var messages;
 
     if (!isMuted(fingerprint)) {
-      debug('Muting %s', fingerprint);
       mutes.push(fingerprint);
       localStorage.setItem('muted', JSON.stringify(mutes));
       messages = chat.list.children().filter(function() {
@@ -326,7 +298,6 @@ define(['jquery', './base/transform', 'gumhelper', './base/videoShooter', 'finge
 
           svg.attr('class', 'progress');
 
-          debug('Sending chat');
           $.post('/add/chat', $.extend(submission, auth), function () {
             // nothing to see here?
           }).error(function (data) {
