@@ -10,8 +10,8 @@ module.exports = function (app, nconf, io) {
     limit: 25
   });
 
-  var getSortedChats = function (done){
-    diphenhydramine.getChats(true, function (err, c) {
+  var getSortedChats = function (channel, done) {
+    diphenhydramine.getChats(channel, true, function (err, c) {
       if (err) {
         done(err);
       } else {
@@ -24,11 +24,17 @@ module.exports = function (app, nconf, io) {
   };
 
   var emitChat = function (socket, channel, chat) {
-    socket.emit('message', { chat: chat });
+    io.sockets.in(channel).emit('message', { chat: chat });
   };
 
   app.get('/', function (req, res) {
     res.render('index');
+  });
+
+  app.get('/c/:channel', function (req, res) {
+    res.render('channel', {
+      channel: req.params.channel
+    });
   });
 
   app.get('/ip', function (req, res) {
@@ -60,7 +66,7 @@ module.exports = function (app, nconf, io) {
     return crypto.createHash('md5').update(fingerprint + ip).digest('hex');
   };
 
-  app.post('/:channel/add/chat', function (req, res, next) {
+  app.post('/c/:channel/chat', function (req, res, next) {
     var ip = req.ip;
     var userId = getUserId(req.body.fingerprint, ip);
 
@@ -90,23 +96,25 @@ module.exports = function (app, nconf, io) {
       ip = socket.handshake.headers['x-forwarded-for'].split(/ *, */)[0];
     }
 
-    // Fire out an initial burst of images to the connected client, assuming there are any available
-    getSortedChats(function (err, results) {
-      if (results.chats && results.chats.length > 0) {
-        try {
-          results.chats.forEach(function (chat) {
-            emitChat(socket, chat, zio, topic_out);
-          });
-        } catch (e) {
-          if (typeof results.chats.forEach !== 'function') {
-            console.log('chats is type of ', typeof results.chats, ' and somehow has length ', results.chats.length);
+    socket.on('join', function (data) {
+      // Fire out an initial burst of images to the connected client, assuming there are any available
+      getSortedChats(data.channel, function (err, results) {
+        if (results.chats && results.chats.length > 0) {
+          try {
+            results.chats.forEach(function (chat) {
+              emitChat(socket, data.channel, chat);
+            });
+          } catch (e) {
+            if (typeof results.chats.forEach !== 'function') {
+              console.log('chats is type of ', typeof results.chats, ' and somehow has length ', results.chats.length);
 
-            if (typeof results.chats === 'string') {
-              console.log('results.chats appears to be a string');
+              if (typeof results.chats === 'string') {
+                console.log('results.chats appears to be a string');
+              }
             }
           }
         }
-      }
+      });
     });
   });
 };

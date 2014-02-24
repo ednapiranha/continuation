@@ -4,7 +4,6 @@ html
     title= t('pageTitle')
     meta(content='width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0', name='viewport')
     meta(content='yes', name='apple-mobile-web-app-capable')
-    meta(content='chrome=1', http-equiv='X-UA-Compatible')
     link(rel='shortcut icon', href='/images/favicon.png')
     if debug
       link(rel='stylesheet', href='/stylesheets/main.css')
@@ -16,14 +15,13 @@ html
   body(data-mute=t('mute'))
     #wrapper
       .header
-        a#logo(href='/info', target='_blank', title=t('info!'))= t('info!')
+        a#logo
 
       #chat-container
         ul(id='chat-list')
         .end
     #footer
       block content
-    block terms
 
     script(src='/socket.io/socket.io.js')
     if debug

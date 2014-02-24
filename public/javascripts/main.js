@@ -29,8 +29,8 @@ define(['jquery', './base/transform', 'gumhelper', './base/videoShooter', 'finge
   var body = $('body');
   var counter = $('#counter');
   var footer = $('#footer');
+  var channel = false;
   var svg = $(null);
-  var terms = $('#terms');
   var isPosting = false;
   var canSend = true;
   var muteText = body.data('mute');
@@ -206,32 +206,7 @@ define(['jquery', './base/transform', 'gumhelper', './base/videoShooter', 'finge
     auth.userid = md5(auth.fingerprint + data.ip);
   });
 
-  if (navigator.getMedia) {
-    svg = $('<svg class="progress" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 128 64" preserveAspectRatio="xMidYMid" hidden><path d="M0,0 " id="arc" fill="none" stroke="rgba(226,38,97,0.8)" /></svg>');
-
-    footer.prepend(svg);
-
-    gumHelper.startVideoStreaming(function callback(err, stream, videoElement) {
-      if (err) {
-        disableVideoMode();
-      } else {
-        videoElement.width = 135;
-        videoElement.height = 101;
-        footer.prepend(videoElement);
-        videoElement.play();
-        videoShooter = new VideoShooter(videoElement);
-        composer.form.click();
-      }
-    });
-  } else {
-    disableVideoMode();
-  }
-
-  if (localStorage.getItem('terms') === null) {
-    terms.addClass('on');
-  }
-
-  body.on('click', '#unmute, #tnc-accept', function (ev) {
+  body.on('click', '#unmute', function (ev) {
     if (ev.target.id === 'unmute') {
       localStorage.removeItem('muted');
       mutes = [];
@@ -285,7 +260,7 @@ define(['jquery', './base/transform', 'gumhelper', './base/videoShooter', 'finge
 
         setTimeout(function () {
           canSend = true;
-        }, 5000);
+        }, 3000);
 
         progressCircleTo(0);
 
@@ -298,7 +273,7 @@ define(['jquery', './base/transform', 'gumhelper', './base/videoShooter', 'finge
 
           svg.attr('class', 'progress');
 
-          $.post('/add/chat', $.extend(submission, auth), function () {
+          $.post('/c/' + auth.channel + '/chat', $.extend(submission, auth), function () {
             // nothing to see here?
           }).error(function (data) {
             alert(data.responseJSON.error);
@@ -309,7 +284,7 @@ define(['jquery', './base/transform', 'gumhelper', './base/videoShooter', 'finge
             counter.text(CHAR_LIMIT);
             isPosting = false;
           });
-        }, 10, 0.2, function (captureProgress) {
+        }, 3, 0.5, function (captureProgress) {
           progressCircleTo(captureProgress);
         });
       }
@@ -321,8 +296,36 @@ define(['jquery', './base/transform', 'gumhelper', './base/videoShooter', 'finge
   });
 
   socket.on('message', function (data) {
+    console.log('rendering chat')
     render(data.chat);
   });
+
+  auth.channel = body.find('#channel').data('channel') || false;
+
+  if (auth.channel && navigator.getMedia) {
+    socket.emit('join', {
+      channel: auth.channel
+    });
+
+    svg = $('<svg class="progress" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 128 64" preserveAspectRatio="xMidYMid" hidden><path d="M0,0 " id="arc" fill="none" stroke="rgba(226,38,97,0.8)" /></svg>');
+
+    footer.prepend(svg);
+
+    gumHelper.startVideoStreaming(function callback(err, stream, videoElement) {
+      if (err) {
+        disableVideoMode();
+      } else {
+        videoElement.width = 135;
+        videoElement.height = 101;
+        footer.prepend(videoElement);
+        videoElement.play();
+        videoShooter = new VideoShooter(videoElement);
+        composer.form.click();
+      }
+    });
+  } else {
+    disableVideoMode();
+  }
 
   $(document).on(pageVisibilityChange, handleVisibilityChange);
 

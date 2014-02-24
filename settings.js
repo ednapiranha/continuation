@@ -31,7 +31,7 @@ module.exports = function(app, configurations, express) {
     app.use(express.session({ secret: nconf.get('session_secret') }));
     app.use(function (req, res, next) {
       res.locals.session = req.session;
-      res.locals.csrf = req.csrfToken();
+      res.locals.csrf = csrf;
 
       if (!process.env.NODE_ENV) {
         res.locals.debug = true;
