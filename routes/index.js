@@ -4,6 +4,7 @@ module.exports = function (app, nconf, io) {
   var crypto = require('crypto');
   var Diphenhydramine = require('diphenhydramine');
   var level = require('level');
+  var postmark = require('postmark')(nconf.get('postmark_api_key'));
 
   var diphenhydramine = new Diphenhydramine({
     db: './db',
@@ -29,6 +30,22 @@ module.exports = function (app, nconf, io) {
 
   app.get('/', function (req, res) {
     res.render('index');
+  });
+
+  app.post('/c/:channel', function (req, res) {
+    console.log('sending to ', req.body.email)
+    postmark.send({
+      'From': 'noreply@meatspac.es',
+      'To': req.body.email,
+      'Subject': 'Here is your chat link!',
+      'TextBody': 'Here is the link to your temporary chat room'
+    }, function (err, success) {
+      if (err) {
+        throw new Error('Unable to send via postmark: ' + err.message);
+      } else {
+        console.info('Sent to postmark for delivery');
+      }
+    });
   });
 
   app.get('/c/:channel', function (req, res) {
