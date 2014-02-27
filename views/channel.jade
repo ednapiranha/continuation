@@ -4,11 +4,12 @@ block content
   #wrapper
     .header
       a#logo
+      p #{channel}
 
     #chat-container
       ul(id='chat-list')
       .end
-    block content
+
     div(id='channel', data-channel='#{channel}')
     form(method='post', id='composer-form')
       .message-content

@@ -1,10 +1,11 @@
 extend layout
 
 block content
-  #wrapper
+  #wrapper.home
     h1 Chat now
 
     h2 Create a channel
-    form(method='post')
+    form(method='post', action='/channel')
       input(type='text', name='channel', placeholder='type name here', required)
+      input(type='text', name='email', placeholder='your email', required)
       button(type='submit') Create!

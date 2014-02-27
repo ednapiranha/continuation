@@ -26,7 +26,8 @@
     "crypto": "0.0.3",
     "level": ">= 0.10.0",
     "i18next": "~1.7.1",
-    "postmark": "*"
+    "postmark": "*",
+    "uuid": "*"
   },
   "devDependencies": {
     "grunt": "~0.4.2",
