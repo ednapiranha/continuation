@@ -1,4 +1,10 @@
 extend layout
 
 block content
-  p chat app demo
+  #wrapper
+    h1 Chat now
+
+    h2 Create a channel
+    form(method='post')
+      input(type='text', name='channel', placeholder='type name here', required)
+      button(type='submit') Create!
