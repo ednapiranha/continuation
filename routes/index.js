@@ -34,6 +34,8 @@ module.exports = function (app, nconf, io) {
   });
 
   app.post('/channel', function (req, res, next) {
+    var postmark = require('postmark')(nconf.get('postmark_api_key'));
+
     diphenhydramine.getChats(req.body.channel, true, function (err, c) {
       if (err) {
         res.status(400);
@@ -44,12 +46,14 @@ module.exports = function (app, nconf, io) {
           req.session.accessId = accessIds[req.params.channel];
           console.log('accessId ', req.session.accessId)
         }
-        /*
+
         postmark.send({
-          'From': 'noreply@meatspac.es',
+          'From': nconf.get('email'),
           'To': req.body.email,
           'Subject': 'Here is your chat link!',
-          'TextBody': 'Here is the link to your temporary chat room'
+          'HtmlBody': '<p>Here is the link to your temporary chat room</p>',
+          'TextBody': 'Here is the link to your temporary chat room',
+          'Attachments': []
         }, function (err, success) {
           if (err) {
             throw new Error('Unable to send via postmark: ' + err.message);
@@ -57,7 +61,6 @@ module.exports = function (app, nconf, io) {
             console.info('Sent to postmark for delivery');
           }
         });
-        */
 
         res.render('channel', {
           channel: req.body.channel,
