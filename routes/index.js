@@ -43,36 +43,48 @@ module.exports = function (app, nconf, io) {
       } else {
         if (!accessIds[req.body.channel]) {
           accessIds[req.body.channel] = uuid.v4();
-          req.session.accessId = accessIds[req.params.channel];
-          console.log('accessId ', req.session.accessId)
+          req.session.accessId = accessIds[req.body.channel];
+
+          var link = nconf.get('domain') + ':' + nconf.get('authPort') + '/c/' +
+                     req.body.channel + '?admin=' + accessIds[req.body.channel];
+
+          postmark.send({
+            'From': nconf.get('email'),
+            'To': req.body.email,
+            'Subject': 'Here is your chat link!',
+            'HtmlBody': '<p>Here is the link to your temporary chat room <a href="' +
+            link +'">' + link + '</a></p>',
+            'TextBody': 'Here is the link to your temporary chat room ' + link,
+            'Attachments': []
+          }, function (err, success) {
+            if (err) {
+              throw new Error('Unable to send via postmark: ' + err.message);
+            } else {
+              console.info('Sent to postmark for delivery');
+            }
+          });
         }
 
-        postmark.send({
-          'From': nconf.get('email'),
-          'To': req.body.email,
-          'Subject': 'Here is your chat link!',
-          'HtmlBody': '<p>Here is the link to your temporary chat room</p>',
-          'TextBody': 'Here is the link to your temporary chat room',
-          'Attachments': []
-        }, function (err, success) {
-          if (err) {
-            throw new Error('Unable to send via postmark: ' + err.message);
-          } else {
-            console.info('Sent to postmark for delivery');
-          }
-        });
-
-        res.render('channel', {
-          channel: req.body.channel,
-          chats: c.chats
-        });
+        res.redirect('/c/' + req.body.channel);
       }
     });
   });
 
   app.get('/c/:channel', function (req, res) {
-    res.render('channel', {
-      channel: req.params.channel
+    if (req.query.admin && accessIds[req.params.channel] === req.query.admin) {
+      req.session.accessId = accessIds[req.params.channel];
+    }
+
+    diphenhydramine.getChats(req.params.channel, true, function (err, c) {
+      if (err) {
+        res.status(400);
+        next(err);
+      } else {
+        res.render('channel', {
+          channel: req.params.channel,
+          chats: c.chats
+        });
+      }
     });
   });
 

@@ -5,6 +5,9 @@ block content
     .header
       a#logo
       p #{channel}
+      if session.accessId
+        #customize
+          p Customize
 
     #chat-container
       ul(id='chat-list')
