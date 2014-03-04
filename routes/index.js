@@ -70,7 +70,7 @@ module.exports = function (app, nconf, io) {
     });
   });
 
-  app.get('/c/:channel', function (req, res) {
+  app.get('/c/:channel', function (req, res, next) {
     if (req.query.admin && accessIds[req.params.channel] === req.query.admin) {
       req.session.accessId = accessIds[req.params.channel];
     }

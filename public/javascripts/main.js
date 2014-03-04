@@ -296,7 +296,6 @@ define(['jquery', './base/transform', 'gumhelper', './base/videoShooter', 'finge
   });
 
   socket.on('message', function (data) {
-    console.log('rendering chat')
     render(data.chat);
   });
 
