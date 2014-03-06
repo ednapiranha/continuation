@@ -166,9 +166,9 @@ define(['jquery', './base/transform', 'gumhelper', './base/videoShooter', 'finge
     }
   };
 
-  var getScreenshot = function (callback, numFrames, interval, progressCallback) {
+  var getScreenshot = function (callback) {
     if (videoShooter) {
-      videoShooter.getShot(callback, numFrames, interval, progressCallback);
+      videoShooter.getShot(callback);
     } else {
       callback('');
     }
@@ -284,8 +284,6 @@ define(['jquery', './base/transform', 'gumhelper', './base/videoShooter', 'finge
             counter.text(CHAR_LIMIT);
             isPosting = false;
           });
-        }, 3, 0.5, function (captureProgress) {
-          progressCircleTo(captureProgress);
         });
       }
     }

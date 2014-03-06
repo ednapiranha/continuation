@@ -4,42 +4,15 @@ define(['Animated_GIF'], function (Animated_GIF) {
   function VideoShooter (videoElement) {
     var canvas = document.createElement('canvas');
     var context = canvas.getContext('2d');
+    var video = $('video');
     context.scale(-1, 1); // mirror flip preview back to the normal direction
 
     canvas.width = videoElement.width;
     canvas.height = videoElement.height;
 
-    this.getShot = function (callback, numFrames, interval, progressCallback) {
-      numFrames = numFrames !== undefined ? numFrames : 3;
-      interval = interval !== undefined ? interval : 0.1; // In seconds
-
-      var pendingFrames = numFrames;
-      var ag = new Animated_GIF({ workerPath: '/javascripts/lib/animated-gif/dist/Animated_GIF.worker.min.js' });
-      ag.setSize(canvas.width, canvas.height);
-      ag.setDelay(interval);
-
-      captureFrame();
-
-      function captureFrame() {
-        ag.addFrame(videoElement);
-        pendingFrames--;
-
-        // Call back with an r value indicating how far along we are in capture
-        progressCallback((numFrames - pendingFrames) / numFrames);
-
-        if(pendingFrames > 0) {
-          setTimeout(captureFrame, interval * 1000); // timeouts are in milliseconds
-        } else {
-          ag.getBase64GIF(function(image) {
-
-            // Ensure workers are freed-so we avoid bug #103 https://github.com/meatspaces/meatspace-chat/issues/103
-            ag.destroy();
-
-            callback(image);
-
-          });
-        }
-      }
+    this.getShot = function (callback) {
+      context.drawImage(video[0], 0, 0, canvas.width, canvas.height);
+      callback(canvas.toDataURL('image/jpeg', 0.5));
     };
   }
 
