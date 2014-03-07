@@ -8,6 +8,7 @@
     "js-md5": "1.0.1",
     "requirejs": "2.1.5",
     "momentjs": "~2.4.0",
+    "gumhelper": "sole/gumhelper#596ddfb555039a400b8287fc5ac01f0b2aebf6fa",
     "favico.js": "ca5e30446b304177a0ee25914e9899801b67b59b"
   }
 }

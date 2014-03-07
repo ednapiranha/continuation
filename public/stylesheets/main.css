@@ -237,33 +237,16 @@ input::-webkit-input-placeholder {
 }
 
 #chat-container li {
-    background-color: rgba(255, 255, 255, 0.85);
-    clear: both;
     float: left;
-    min-height: 102px;
-    width: 100%;
+    height: 300px;
+    width: 300px;
     overflow: hidden;
     position: relative;
     white-space: pre-wrap;
 }
 
-#chat-container li:after {
-    display: block;
-    position: absolute;
-    width: 100%;
-    height: 1px;
-    background: #f181ad;
-    content: "";
-    bottom: 0;
-    left: 171px;
-}
-
 #chat-container li img {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 18px;
-    width: 135px;
+    width: 400px;
 }
 
 #chat-container .out-of-view img {
@@ -271,7 +254,9 @@ input::-webkit-input-placeholder {
 }
 
 #chat-container li p {
-    color: #000;
+    background-color: rgba(1, 1, 1, 0.7);
+    bottom: 0;
+    color: #eee;
     font-size: 1.35rem;
     line-height: 1.5rem;
     min-width: 182px;
@@ -279,6 +264,8 @@ input::-webkit-input-placeholder {
     padding: 14px 70px 18px 171px;
     font-weight: 300;
     overflow: hidden;
+    position: absolute;
+    text-align: left;
     text-overflow: ellipsis;
 }
 

@@ -1,5 +1,5 @@
-define(['jquery', './base/transform', 'gumhelper', './base/videoShooter', 'fingerprint', 'md5', 'moment', 'favico', 'waypoints'],
-  function ($, transform, gumHelper, VideoShooter, Fingerprint, md5, moment, Favico) {
+define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'fingerprint', 'md5', 'moment', 'favico', 'waypoints'],
+  function ($, gumhelper, transform, VideoShooter, Fingerprint, md5, moment, Favico) {
   'use strict';
 
   var videoShooter;
@@ -166,40 +166,10 @@ define(['jquery', './base/transform', 'gumhelper', './base/videoShooter', 'finge
     }
   };
 
-  var getScreenshot = function (callback) {
-    if (videoShooter) {
-      videoShooter.getShot(callback);
-    } else {
-      callback('');
-    }
-  };
-
   var disableVideoMode = function () {
     composer.form.hide();
     footer.hide();
     chat.container.addClass('lean');
-  };
-
-  var progressCircleTo = function (progressRatio) {
-    var circle = $('path#arc');
-
-    var thickness = 10;
-    var angle = progressRatio * (360 + (thickness / 2)); // adding thickness accounts for overlap
-    var offsetX = 128 / 2;
-    var offsetY = 64 / 2;
-    var radius = offsetY - (thickness / 2);
-
-    var radians = (angle / 180) * Math.PI;
-    var x = offsetX + Math.cos(radians) * radius;
-    var y = offsetY + Math.sin(radians) * radius;
-    var d;
-
-    if (progressRatio === 0) {
-      d = 'M0,0 M ' + x + ' ' + y;
-    } else {
-      d = circle.attr('d') + ' L ' + x + ' ' + y;
-    }
-    circle.attr('d', d).attr('stroke-width', thickness);
   };
 
   $.get('/ip?t=' + Date.now(), function (data) {
@@ -262,28 +232,21 @@ define(['jquery', './base/transform', 'gumhelper', './base/videoShooter', 'finge
           canSend = true;
         }, 3000);
 
-        progressCircleTo(0);
+        var picture = videoShooter.getShot();
+        var submission = composer.inputs.reduce(function(data, input) {
+          return (data[input.name] = input.value, data);
+        }, { picture: picture });
 
-        svg.attr('class', 'progress visible');
-
-        getScreenshot(function (picture) {
-          var submission = composer.inputs.reduce(function(data, input) {
-            return (data[input.name] = input.value, data);
-          }, { picture: picture });
-
-          svg.attr('class', 'progress');
-
-          $.post('/c/' + auth.channel + '/chat', $.extend(submission, auth), function () {
-            // nothing to see here?
-          }).error(function (data) {
-            alert(data.responseJSON.error);
-          }).always(function (data) {
-            composer.message.prop('readonly', false);
-            composer.message.val('');
-            composer.blocker.addClass('hidden');
-            counter.text(CHAR_LIMIT);
-            isPosting = false;
-          });
+        $.post('/c/' + auth.channel + '/chat', $.extend(submission, auth), function () {
+          // nothing to see here?
+        }).error(function (data) {
+          alert(data.responseJSON.error);
+        }).always(function (data) {
+          composer.message.prop('readonly', false);
+          composer.message.val('');
+          composer.blocker.addClass('hidden');
+          counter.text(CHAR_LIMIT);
+          isPosting = false;
         });
       }
     }
@@ -304,11 +267,7 @@ define(['jquery', './base/transform', 'gumhelper', './base/videoShooter', 'finge
       channel: auth.channel
     });
 
-    svg = $('<svg class="progress" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 128 64" preserveAspectRatio="xMidYMid" hidden><path d="M0,0 " id="arc" fill="none" stroke="rgba(226,38,97,0.8)" /></svg>');
-
-    footer.prepend(svg);
-
-    gumHelper.startVideoStreaming(function callback(err, stream, videoElement) {
+    gumhelper.startVideoStreaming(function callback(err, stream, videoElement) {
       if (err) {
         disableVideoMode();
       } else {
