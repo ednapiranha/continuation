@@ -5,7 +5,7 @@ define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'finge
   var videoShooter;
 
   var CHAT_LIMIT = 25;
-  var CHAR_LIMIT = 250;
+  var CHAR_LIMIT = 100;
 
   var auth = {
     userid: null,
@@ -136,7 +136,7 @@ define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'finge
           var bottom = last ? last.getBoundingClientRect().bottom : 0;
           var follow = bottom < size + 50;
 
-          chat.list.append(li);
+          chat.list.prepend(li);
           setWaypoint(li);
 
           // if scrolled to bottom of window then scroll the new thing into view

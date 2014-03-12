@@ -12,7 +12,7 @@ define(['Animated_GIF'], function (Animated_GIF) {
 
     this.getShot = function () {
       context.drawImage(video[0], 0, 0, canvas.width, canvas.height);
-      return canvas.toDataURL('image/jpeg', 0.5);
+      return canvas.toDataURL('image/jpeg', 0.7);
     };
   }
 

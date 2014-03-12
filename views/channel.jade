@@ -5,9 +5,6 @@ block content
     .header
       a#logo
       p #{channel}
-      if session.accessId
-        #customize
-          p Customize
 
     #chat-container
       ul(id='chat-list')
@@ -17,8 +14,8 @@ block content
   #footer
     form(method='post', id='composer-form')
       .message-content
-        input(name='message', id='composer-message', class='input', maxlength='250', autocomplete='off', placeholder=t('messagePrompt'))
+        input(name='message', id='composer-message', class='input', maxlength='100', autocomplete='off', placeholder=t('messagePrompt'))
         input(type='hidden', name='_csrf', value='#{csrf}')
         #composer-blocker.hidden
-    #counter 250
+    #counter 100
 
