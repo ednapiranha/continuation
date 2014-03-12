@@ -239,6 +239,7 @@ input::-webkit-input-placeholder {
 #chat-container li {
     float: left;
     height: 300px;
+    margin: 1px;
     width: 300px;
     overflow: hidden;
     position: relative;
@@ -257,16 +258,16 @@ input::-webkit-input-placeholder {
     background-color: rgba(1, 1, 1, 0.7);
     bottom: 0;
     color: #eee;
-    font-size: 1.35rem;
-    line-height: 1.5rem;
-    min-width: 182px;
+    font-size: 0.9rem;
+    line-height: 1.1rem;
     overflow: hidden;
-    padding: 14px 70px 18px 171px;
+    padding: 10px;
     font-weight: 300;
     overflow: hidden;
     position: absolute;
     text-align: left;
     text-overflow: ellipsis;
+    width: 280px;
 }
 
 #chat-container li .mute {
@@ -291,7 +292,7 @@ input::-webkit-input-placeholder {
 }
 
 #chat-container li .mute:hover {
-    background-color: #e22661;
+    background-color: #888;
     color: #eee;
 }
 
@@ -364,7 +365,7 @@ ul li.on {
     width: 100%;
     height: 51px;
     padding: 0;
-    background-color: #f181ad;
+    background-color: rgba(1, 1, 1, 0.9);
 }
 
 #footer video {
