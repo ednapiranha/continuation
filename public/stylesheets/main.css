@@ -54,12 +54,6 @@ body {
     background-color: #eee;
 }
 
-body.info {
-    background-color: #eee;
-    background-image: none;
-    padding-top: 50px;
-}
-
 #wrapper.home {
     padding: 20px;
 }
@@ -73,36 +67,6 @@ body.info {
     font-size: 1.5rem;
     margin-top: 10px;
     padding: 5px;
-}
-
-.info .item {
-    background-color: #fff;
-    box-shadow: #ccc 1px 1px 4px;
-    box-sizing: border-box;
-    display: inline-block;
-    height: 330px;
-    margin: 5px;
-    padding: 10px;
-    position: relative;
-    text-align: start;
-    vertical-align: top;
-    width: 295px;
-}
-
-.artist-wrapper {
-    font-size: 1.2rem;
-    padding: 20px;
-}
-
-.artist-wrapper a {
-    color: #f65694;
-    display: inline-block;
-    text-decoration: none;
-}
-
-.artist-wrapper a.artist {
-    font-size: 1.8rem;
-    margin-right: 15px;
 }
 
 body > img {
@@ -165,31 +129,15 @@ body > img {
     text-align: center;
     top: 0;
     width: 100%;
-    height: 50px;
+    height: 40px;
     z-index: 6;
 }
 
 .header p {
+    color: #fff;
     font-size: 2rem;
     font-weight: 100;
-}
-
-#logo {
-    float: left;
-    text-indent: -9999px;
-    display: inline-block;
-    height: 35px;
-    width: 35px;
-    background: url('../images/meatspace.png') center no-repeat;
-    background-size: auto 100%;
-    margin: 5px 14px;
-    -webkit-transition: -webkit-transform .5s;
-    transition: transform .5s;
-}
-
-#logo:hover {
-    -webkit-transform: rotate(20deg);
-    transform: rotate(20deg);
+    line-height: 2.2rem;
 }
 
 .input, #counter {
@@ -203,7 +151,7 @@ body > img {
 .input {
     width: 80%;
     box-sizing: border-box;
-    margin-left: 171px;
+    margin-left: 15px;
     padding: 0 100px 0 0;
     border: none;
     outline: none;
@@ -241,39 +189,27 @@ input::-webkit-input-placeholder {
 }
 
 #chat-container li {
+    border-bottom: 1px solid #ccc;
+    clear: both;
     float: left;
-    height: 300px;
-    margin: 1px;
-    width: 300px;
+    margin: 1px 0;
     overflow: hidden;
     position: relative;
     white-space: pre-wrap;
-}
-
-#chat-container li img {
-    left: -60px;
-    position: absolute;
-    width: 400px;
-}
-
-#chat-container .out-of-view img {
-    display: none;
+    width: 100%;
 }
 
 #chat-container li p {
-    background-color: rgba(1, 1, 1, 0.7);
-    bottom: 0;
-    color: #eee;
-    font-size: 0.95rem;
-    line-height: 1.1rem;
+    color: #111;
+    font-size: 1.1rem;
+    line-height: 1.3rem;
     overflow: hidden;
     padding: 10px;
     font-weight: 300;
     overflow: hidden;
-    position: absolute;
+    padding-right: 150px;
     text-align: left;
     text-overflow: ellipsis;
-    width: 280px;
 }
 
 #chat-container li .mute {
@@ -303,12 +239,12 @@ input::-webkit-input-placeholder {
 }
 
 #chat-container li .timestamp {
-    background-color: rgba(1, 1, 1, 0.6);
+    background-color: rgba(1, 1, 1, 0.3);
     font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
     border: 0;
     color: #eee;
     display: block;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 300;
     position: absolute;
     right: 0;

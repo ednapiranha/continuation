@@ -5,7 +5,7 @@ define(['jquery', './base/transform', 'fingerprint', 'md5', 'moment', 'favico', 
   var videoShooter;
 
   var CHAT_LIMIT = 25;
-  var CHAR_LIMIT = 100;
+  var CHAR_LIMIT = 300;
 
   var auth = {
     userid: null,
@@ -80,65 +80,56 @@ define(['jquery', './base/transform', 'fingerprint', 'md5', 'moment', 'favico', 
     var fingerprint = incoming.value.fingerprint;
 
     if (!isMuted(fingerprint)) {
-      var img = new Image();
-      var onComplete = function () {
-        // Don't want duplicates and don't want muted messages
-        if (body.find('li[data-key="' + incoming.key + '"]').length === 0 &&
-            !isMuted(fingerprint)) {
+      // Don't want duplicates and don't want muted messages
+      if (body.find('li[data-key="' + incoming.key + '"]').length === 0 &&
+          !isMuted(fingerprint)) {
 
-          var li = document.createElement('li');
-          li.dataset.key = incoming.key;
-          li.dataset.fingerprint = fingerprint;
-          li.appendChild(img);
+        var li = document.createElement('li');
+        li.dataset.key = incoming.key;
+        li.dataset.fingerprint = fingerprint;
+        // This is likely your own fingerprint so you don't mute yourself. Unless you're weird.
+        if (auth.userid !== fingerprint) {
+          updateNotificationCount();
 
-          // This is likely your own fingerprint so you don't mute yourself. Unless you're weird.
-          if (auth.userid !== fingerprint) {
-            updateNotificationCount();
-
-            var button = document.createElement('button');
-            button.textContent = muteText;
-            button.className = 'mute';
-            li.appendChild(button);
-          }
-
-          var message = document.createElement('p');
-          message.textContent = incoming.value.message;
-          message.innerHTML = transform(message.innerHTML);
-          li.appendChild(message);
-
-          var created = moment(new Date(incoming.value.created));
-          var time = document.createElement('time');
-          time.setAttribute('datetime', created.toISOString());
-          time.textContent = created.format('LT');
-          time.className = 'timestamp';
-          li.appendChild(time);
-
-          var size = composer.message.is(":visible") ?
-            composer.message[0].getBoundingClientRect().bottom :
-            $(window).innerHeight();
-
-          var last = chat.list[0].lastChild;
-          var bottom = last ? last.getBoundingClientRect().bottom : 0;
-          var follow = bottom < size + 50;
-
-          chat.list.prepend(li);
-
-          // if scrolled to bottom of window then scroll the new thing into view
-          // otherwise, you are reading the history... allow user to scroll up.
-          if (follow) {
-            var children = chat.list.children();
-            var toRemove = children.length - CHAT_LIMIT;
-
-            toRemove = toRemove < 0 ? 0 : toRemove;
-            children.slice(0, toRemove).remove();
-            li.scrollIntoView();
-          }
+          var button = document.createElement('button');
+          button.textContent = muteText;
+          button.className = 'mute';
+          li.appendChild(button);
         }
-      };
 
-      img.onload = img.onerror = onComplete;
-      img.src = incoming.value.media;
-      img.title = fingerprint;
+        var message = document.createElement('p');
+        message.textContent = incoming.value.message;
+        message.innerHTML = transform(message.innerHTML);
+        li.appendChild(message);
+
+        var created = moment(new Date(incoming.value.created));
+        var time = document.createElement('time');
+        time.setAttribute('datetime', created.toISOString());
+        time.textContent = created.format('LT');
+        time.className = 'timestamp';
+        li.appendChild(time);
+
+        var size = composer.message.is(":visible") ?
+          composer.message[0].getBoundingClientRect().bottom :
+          $(window).innerHeight();
+
+        var last = chat.list[0].lastChild;
+        var bottom = last ? last.getBoundingClientRect().bottom : 0;
+        var follow = bottom < size + 50;
+
+        chat.list.prepend(li);
+
+        // if scrolled to bottom of window then scroll the new thing into view
+        // otherwise, you are reading the history... allow user to scroll up.
+        if (follow) {
+          var children = chat.list.children();
+          var toRemove = children.length - CHAT_LIMIT;
+
+          toRemove = toRemove < 0 ? 0 : toRemove;
+          children.slice(0, toRemove).remove();
+          li.scrollIntoView();
+        }
+      }
     }
   };
 
