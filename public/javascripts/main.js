@@ -1,5 +1,5 @@
-define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'fingerprint', 'md5', 'moment', 'favico', 'waypoints'],
-  function ($, gumhelper, transform, VideoShooter, Fingerprint, md5, moment, Favico) {
+define(['jquery', './base/transform', 'fingerprint', 'md5', 'moment', 'favico', 'waypoints'],
+  function ($, transform, Fingerprint, md5, moment, Favico) {
   'use strict';
 
   var videoShooter;
@@ -76,21 +76,6 @@ define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'finge
     return mutes.indexOf(fingerprint) !== -1;
   };
 
-  var setWaypoint = function (node) {
-    var li = $(node);
-    li.waypoint(function (direction) {
-      li.toggleClass('out-of-view', direction === 'down');
-    }, {
-      offset: function () {
-        return -li.height();
-      }
-    }).waypoint(function (direction) {
-      li.toggleClass('out-of-view', direction === 'up');
-    }, {
-      offset: '100%'
-    });
-  };
-
   var render = function (incoming) {
     var fingerprint = incoming.value.fingerprint;
 
@@ -137,7 +122,6 @@ define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'finge
           var follow = bottom < size + 50;
 
           chat.list.prepend(li);
-          setWaypoint(li);
 
           // if scrolled to bottom of window then scroll the new thing into view
           // otherwise, you are reading the history... allow user to scroll up.
@@ -146,15 +130,7 @@ define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'finge
             var toRemove = children.length - CHAT_LIMIT;
 
             toRemove = toRemove < 0 ? 0 : toRemove;
-            children.slice(0, toRemove).waypoint('destroy').remove();
-
-            if (toRemove > 1) {
-              // if we've removed more than one message, then the vertical
-              // height of the chats has changed (since we've only added
-              // one chat). Refresh waypoints to make gifs appear properly
-              $.waypoints('refresh');
-            }
-
+            children.slice(0, toRemove).remove();
             li.scrollIntoView();
           }
         }
@@ -232,10 +208,9 @@ define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'finge
           canSend = true;
         }, 3000);
 
-        var picture = videoShooter.getShot();
         var submission = composer.inputs.reduce(function(data, input) {
           return (data[input.name] = input.value, data);
-        }, { picture: picture });
+        }, { picture: '' });
 
         $.post('/c/' + auth.channel + '/chat', $.extend(submission, auth), function () {
           // nothing to see here?
@@ -262,25 +237,10 @@ define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'finge
 
   auth.channel = body.find('#channel').data('channel') || false;
 
-  if (auth.channel && navigator.getMedia) {
+  if (auth.channel) {
     socket.emit('join', {
       channel: auth.channel
     });
-
-    gumhelper.startVideoStreaming(function callback(err, stream, videoElement) {
-      if (err) {
-        disableVideoMode();
-      } else {
-        videoElement.width = 135;
-        videoElement.height = 101;
-        footer.prepend(videoElement);
-        videoElement.play();
-        videoShooter = new VideoShooter(videoElement);
-        composer.form.click();
-      }
-    });
-  } else {
-    disableVideoMode();
   }
 
   $(document).on(pageVisibilityChange, handleVisibilityChange);

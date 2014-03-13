@@ -121,23 +121,18 @@ module.exports = function (app, nconf, io) {
     var ip = req.ip;
     var userId = getUserId(req.body.fingerprint, ip);
 
-    if (req.body.picture) {
-      if ((userId === req.body.userid) || req.isApiUser) {
-        addChat(req.params.channel, req.body.message, req.body.picture, req.body.fingerprint, userId, ip, function (err, status) {
-          if (err) {
-            res.status(400);
-            res.json({ error: err.toString() });
-          } else {
-            res.json({ status: status });
-          }
-        });
-      } else {
-        res.status(403);
-        res.json({ error: 'invalid fingerprint' });
-      }
+    if ((userId === req.body.userid) || req.isApiUser) {
+      addChat(req.params.channel, req.body.message, req.body.picture, req.body.fingerprint, userId, ip, function (err, status) {
+        if (err) {
+          res.status(400);
+          res.json({ error: err.toString() });
+        } else {
+          res.json({ status: status });
+        }
+      });
     } else {
-      res.status(400);
-      res.json({ error: 'you need webrtc' });
+      res.status(403);
+      res.json({ error: 'invalid fingerprint' });
     }
   });
 
