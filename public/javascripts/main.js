@@ -1,8 +1,6 @@
-define(['jquery', './base/transform', 'fingerprint', 'md5', 'moment', 'favico', 'waypoints'],
+define(['jquery', './base/transform', 'fingerprint', 'md5', 'moment', 'favico'],
   function ($, transform, Fingerprint, md5, moment, Favico) {
   'use strict';
-
-  var videoShooter;
 
   var CHAT_LIMIT = 25;
   var CHAR_LIMIT = 300;
@@ -131,12 +129,6 @@ define(['jquery', './base/transform', 'fingerprint', 'md5', 'moment', 'favico', 
         }
       }
     }
-  };
-
-  var disableVideoMode = function () {
-    composer.form.hide();
-    footer.hide();
-    chat.container.addClass('lean');
   };
 
   $.get('/ip?t=' + Date.now(), function (data) {
