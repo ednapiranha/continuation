@@ -78,47 +78,44 @@ define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'finge
   var render = function (incoming) {
     var fingerprint = incoming.value.fingerprint;
 
-    if (!isMuted(fingerprint)) {
+    // Don't want duplicates and don't want muted messages
+    if (!isMuted(fingerprint) &&
+        body.find('li[data-key="' + incoming.key + '"]').length === 0) {
       var img = new Image();
       var onComplete = function () {
-        // Don't want duplicates and don't want muted messages
-        if (body.find('li[data-key="' + incoming.key + '"]').length === 0 &&
-            !isMuted(fingerprint)) {
+        var li = document.createElement('li');
+        li.dataset.key = incoming.key;
+        li.dataset.fingerprint = fingerprint;
+        li.appendChild(img);
 
-          var li = document.createElement('li');
-          li.dataset.key = incoming.key;
-          li.dataset.fingerprint = fingerprint;
-          li.appendChild(img);
+        // This is likely your own fingerprint so you don't mute yourself. Unless you're weird.
+        if (auth.userid !== fingerprint) {
+          updateNotificationCount();
 
-          // This is likely your own fingerprint so you don't mute yourself. Unless you're weird.
-          if (auth.userid !== fingerprint) {
-            updateNotificationCount();
+          var button = document.createElement('button');
+          button.textContent = muteText;
+          button.className = 'mute';
+          li.appendChild(button);
+        }
 
-            var button = document.createElement('button');
-            button.textContent = muteText;
-            button.className = 'mute';
-            li.appendChild(button);
-          }
+        var message = document.createElement('p');
+        message.textContent = incoming.value.message;
+        message.innerHTML = transform(message.innerHTML);
+        li.appendChild(message);
 
-          var message = document.createElement('p');
-          message.textContent = incoming.value.message;
-          message.innerHTML = transform(message.innerHTML);
-          li.appendChild(message);
+        var created = moment(new Date(incoming.value.created));
+        var time = document.createElement('time');
+        time.setAttribute('datetime', created.toISOString());
+        time.textContent = created.format('LT');
+        time.className = 'timestamp';
+        li.appendChild(time);
 
-          var created = moment(new Date(incoming.value.created));
-          var time = document.createElement('time');
-          time.setAttribute('datetime', created.toISOString());
-          time.textContent = created.format('LT');
-          time.className = 'timestamp';
-          li.appendChild(time);
+        chat.list.prepend(li);
 
-          chat.list.prepend(li);
+        var children = chat.list.children();
 
-          var children = chat.list.children();
-
-          if (children.length > CHAT_LIMIT) {
-            chat.list.find('li').last().remove();
-          }
+        if (children.length > CHAT_LIMIT) {
+          chat.list.find('li').last().remove();
         }
       };
 
