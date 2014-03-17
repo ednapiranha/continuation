@@ -100,13 +100,6 @@ define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'finge
             li.appendChild(button);
           }
 
-          updateNotificationCount();
-
-            var button = document.createElement('button');
-            button.textContent = muteText;
-            button.className = 'mute';
-            li.appendChild(button);
-
           var message = document.createElement('p');
           message.textContent = incoming.value.message;
           message.innerHTML = transform(message.innerHTML);
