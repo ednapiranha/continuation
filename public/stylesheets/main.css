@@ -51,7 +51,7 @@ html, body {
 }
 
 body {
-    background-color: #eee;
+    background-color: #111;
 }
 
 body.info {
@@ -89,51 +89,31 @@ body.info {
     width: 295px;
 }
 
-.artist-wrapper {
-    font-size: 1.2rem;
-    padding: 20px;
-}
-
-.artist-wrapper a {
-    color: #f65694;
-    display: inline-block;
-    text-decoration: none;
-}
-
-.artist-wrapper a.artist {
-    font-size: 1.8rem;
-    margin-right: 15px;
-}
-
-body > img {
-    display: none;
-}
-
 #menu-button {
     cursor: pointer;
     font-size: 2rem;
     font-weight: 300;
-    color: #e22661;
-    float: right;
-    margin-top: 5px;
+    color: #31dfff;
     margin-right: 16px;
-    position: relative;
+    position: absolute;
+    right: 10px;
     text-align: right;
+    top: 7px;
 }
 
 #menu-button li a {
-    color: #fff;
+    color: #287e8d;
     display: block;
     font-size: 1.2rem;
     padding: 8px 18px 9px;
     text-decoration: none;
-    background-color: #f181ad;
+    background-color: #31dfff;
     border-bottom: 1px solid rgba(255, 255, 255, .25);
 }
 
 #menu-button li a:hover {
-    background-color: #e22661;;
-    color: #eee;
+    background-color: #fff;
+    color: #111;
 }
 
 #menu-button li:last-of-type a {
@@ -142,9 +122,7 @@ body > img {
 
 #menu-list {
     display: none;
-    background-color: #e22661;
-    border-bottom: 1px solide #111;
-    border-left: 1px solide #111;
+    background-color: #31dfff;
     position: absolute;
     top: 45px;
     right: -16px;
@@ -170,8 +148,10 @@ body > img {
 }
 
 .header p {
+    color: #aaa;
     font-size: 2rem;
     font-weight: 100;
+    line-height: 2.9rem;
 }
 
 #logo {
@@ -180,16 +160,9 @@ body > img {
     display: inline-block;
     height: 35px;
     width: 35px;
-    background: url('../images/meatspace.png') center no-repeat;
+    background: url('../images/facespaces.png') center no-repeat;
     background-size: auto 100%;
     margin: 5px 14px;
-    -webkit-transition: -webkit-transform .5s;
-    transition: transform .5s;
-}
-
-#logo:hover {
-    -webkit-transform: rotate(20deg);
-    transform: rotate(20deg);
 }
 
 .input, #counter {
@@ -278,9 +251,9 @@ input::-webkit-input-placeholder {
 
 #chat-container li .mute {
     font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-    background-color: #f181ad;
+    background-color: #31dfff;
     border: 0;
-    color: #fff;
+    color: #287e8d;
     display: none;
     font-size: 0.8rem;
     font-weight: 300;
@@ -288,7 +261,7 @@ input::-webkit-input-placeholder {
     padding: 8px 18px 9px;
     position: absolute;
     right: 0;
-    bottom: 0;
+    top: 40px;
     cursor: pointer;
     text-transform: uppercase;
 }
@@ -298,8 +271,8 @@ input::-webkit-input-placeholder {
 }
 
 #chat-container li .mute:hover {
-    background-color: #888;
-    color: #eee;
+    background-color: #fff;
+    color: #111;
 }
 
 #chat-container li .timestamp {

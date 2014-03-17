@@ -1,10 +1,10 @@
-define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'fingerprint', 'md5', 'moment', 'favico', 'waypoints'],
+define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'fingerprint', 'md5', 'moment', 'favico'],
   function ($, gumhelper, transform, VideoShooter, Fingerprint, md5, moment, Favico) {
   'use strict';
 
   var videoShooter;
 
-  var CHAT_LIMIT = 25;
+  var CHAT_LIMIT = 24;
   var CHAR_LIMIT = 100;
 
   var auth = {
@@ -30,7 +30,6 @@ define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'finge
   var counter = $('#counter');
   var footer = $('#footer');
   var channel = false;
-  var svg = $(null);
   var isPosting = false;
   var canSend = true;
   var muteText = body.data('mute');
@@ -76,21 +75,6 @@ define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'finge
     return mutes.indexOf(fingerprint) !== -1;
   };
 
-  var setWaypoint = function (node) {
-    var li = $(node);
-    li.waypoint(function (direction) {
-      li.toggleClass('out-of-view', direction === 'down');
-    }, {
-      offset: function () {
-        return -li.height();
-      }
-    }).waypoint(function (direction) {
-      li.toggleClass('out-of-view', direction === 'up');
-    }, {
-      offset: '100%'
-    });
-  };
-
   var render = function (incoming) {
     var fingerprint = incoming.value.fingerprint;
 
@@ -116,6 +100,13 @@ define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'finge
             li.appendChild(button);
           }
 
+          updateNotificationCount();
+
+            var button = document.createElement('button');
+            button.textContent = muteText;
+            button.className = 'mute';
+            li.appendChild(button);
+
           var message = document.createElement('p');
           message.textContent = incoming.value.message;
           message.innerHTML = transform(message.innerHTML);
@@ -128,34 +119,12 @@ define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'finge
           time.className = 'timestamp';
           li.appendChild(time);
 
-          var size = composer.message.is(":visible") ?
-            composer.message[0].getBoundingClientRect().bottom :
-            $(window).innerHeight();
-
-          var last = chat.list[0].lastChild;
-          var bottom = last ? last.getBoundingClientRect().bottom : 0;
-          var follow = bottom < size + 50;
-
           chat.list.prepend(li);
-          setWaypoint(li);
 
-          // if scrolled to bottom of window then scroll the new thing into view
-          // otherwise, you are reading the history... allow user to scroll up.
-          if (follow) {
-            var children = chat.list.children();
-            var toRemove = children.length - CHAT_LIMIT;
+          var children = chat.list.children();
 
-            toRemove = toRemove < 0 ? 0 : toRemove;
-            children.slice(0, toRemove).waypoint('destroy').remove();
-
-            if (toRemove > 1) {
-              // if we've removed more than one message, then the vertical
-              // height of the chats has changed (since we've only added
-              // one chat). Refresh waypoints to make gifs appear properly
-              $.waypoints('refresh');
-            }
-
-            li.scrollIntoView();
+          if (children.length > CHAT_LIMIT) {
+            chat.list.find('li').last().remove();
           }
         }
       };
@@ -199,9 +168,7 @@ define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'finge
         // formatting, and therefore cannot trust a string attribute selector.
         return this.dataset.fingerprint === fingerprint;
       });
-      messages.waypoint('destroy').remove();
-
-      $.waypoints('refresh');
+      messages.remove();
     }
   });
 
@@ -230,7 +197,7 @@ define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'finge
 
         setTimeout(function () {
           canSend = true;
-        }, 3000);
+        }, 2000);
 
         var picture = videoShooter.getShot();
         var submission = composer.inputs.reduce(function(data, input) {

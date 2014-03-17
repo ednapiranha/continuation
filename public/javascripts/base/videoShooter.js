@@ -1,4 +1,4 @@
-define(['Animated_GIF'], function (Animated_GIF) {
+define([], function () {
   'use strict';
 
   function VideoShooter () {
