@@ -28,7 +28,6 @@ define(['jquery', './base/transform', 'fingerprint', 'md5', 'moment', 'favico'],
   var counter = $('#counter');
   var footer = $('#footer');
   var channel = false;
-  var svg = $(null);
   var isPosting = false;
   var canSend = true;
   var muteText = body.data('mute');
