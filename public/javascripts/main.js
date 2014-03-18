@@ -114,7 +114,7 @@ define(['jquery', './base/transform', 'fingerprint', 'md5', 'moment', 'favico'],
         var bottom = last ? last.getBoundingClientRect().bottom : 0;
         var follow = bottom < size + 50;
 
-        chat.list.prepend(li);
+        chat.list.append(li);
 
         // if scrolled to bottom of window then scroll the new thing into view
         // otherwise, you are reading the history... allow user to scroll up.
@@ -220,9 +220,14 @@ define(['jquery', './base/transform', 'fingerprint', 'md5', 'moment', 'favico'],
   auth.channel = body.find('#channel').data('channel') || false;
 
   if (auth.channel) {
-    socket.emit('join', {
-      channel: auth.channel
-    });
+    var joinChannel = function() {
+      socket.emit('join', {
+        channel: auth.channel
+      });
+    };
+
+    joinChannel();
+    socket.on('connect', joinChannel);
   }
 
   $(document).on(pageVisibilityChange, handleVisibilityChange);

@@ -143,6 +143,8 @@ module.exports = function (app, nconf, io) {
     }
 
     socket.on('join', function (data) {
+      socket.join(data.channel);
+
       // Fire out an initial burst of images to the connected client, assuming there are any available
       getSortedChats(data.channel, function (err, results) {
         if (results.chats && results.chats.length > 0) {
