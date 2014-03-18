@@ -12,7 +12,7 @@ define([], function () {
 
     this.getShot = function () {
       context.drawImage(video[0], 0, 0, canvas.width, canvas.height);
-      return canvas.toDataURL('image/jpeg', 0.7);
+      return canvas.toDataURL('image/jpeg', 0.4);
     };
   }
 
