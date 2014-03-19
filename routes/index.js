@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (app, nconf, io) {
+module.exports = function (app, isLoggedIn, nconf, io) {
   var crypto = require('crypto');
   var Diphenhydramine = require('diphenhydramine');
   var level = require('level');
@@ -52,14 +52,15 @@ module.exports = function (app, nconf, io) {
             'From': nconf.get('email'),
             'To': req.body.email,
             'Subject': 'Here is your chat link!',
-            'HtmlBody': '<p>Here is the link to your temporary chat room <a href="' +
+            'HtmlBody': '<p>Here is the link to your chat room <a href="' +
             link +'">' + link + '</a></p>',
-            'TextBody': 'Here is the link to your temporary chat room ' + link,
+            'TextBody': 'Here is the link to your chat room ' + link,
             'Attachments': []
           }, function (err, success) {
             if (err) {
               throw new Error('Unable to send via postmark: ' + err.message);
             } else {
+              req.session.username = req.body.username;
               console.info('Sent to postmark for delivery');
             }
           });
@@ -70,7 +71,7 @@ module.exports = function (app, nconf, io) {
     });
   });
 
-  app.get('/c/:channel', function (req, res, next) {
+  app.get('/c/:channel', isLoggedIn, function (req, res, next) {
     if (req.query.admin && accessIds[req.params.channel] === req.query.admin) {
       req.session.accessId = accessIds[req.params.channel];
     }
@@ -88,14 +89,14 @@ module.exports = function (app, nconf, io) {
     });
   });
 
-  app.get('/ip', function (req, res) {
+  app.get('/ip', isLoggedIn, function (req, res) {
     res.json({
       ip: req.ip
     });
   });
 
   var addChat = function (channel, message, picture, fingerprint, userId, ip, next) {
-    diphenhydramine.addChat(message.slice(0, 250), channel, {
+    diphenhydramine.addChat(message.slice(0, 500), channel, {
       ttl: 600000,
       media: picture,
       fingerprint: userId
@@ -117,12 +118,13 @@ module.exports = function (app, nconf, io) {
     return crypto.createHash('md5').update(fingerprint + ip).digest('hex');
   };
 
-  app.post('/c/:channel/chat', function (req, res, next) {
+  app.post('/c/:channel/chat', isLoggedIn, function (req, res, next) {
     var ip = req.ip;
     var userId = getUserId(req.body.fingerprint, ip);
 
-    if ((userId === req.body.userid) || req.isApiUser) {
-      addChat(req.params.channel, req.body.message, req.body.picture, req.body.fingerprint, userId, ip, function (err, status) {
+    if (userId === req.body.userid) {
+      addChat(req.params.channel, '<strong>' + req.session.username + '</strong>: ' +
+              req.body.message, '', req.body.fingerprint, userId, ip, function (err, status) {
         if (err) {
           res.status(400);
           res.json({ error: err.toString() });

@@ -24,7 +24,15 @@ io.sockets.on('connection', function (socket) {
   });
 });
 
+var isLoggedIn = function (req, res, next) {
+  if (req.session.username) {
+    next();
+  } else {
+    res.redirect('/');
+  }
+};
+
 // routes
-require('./routes')(app, nconf, io);
+require('./routes')(app, isLoggedIn, nconf, io);
 
 server.listen(process.env.PORT || nconf.get('port'));

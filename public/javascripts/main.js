@@ -3,7 +3,7 @@ define(['jquery', './base/transform', 'fingerprint', 'md5', 'moment', 'favico'],
   'use strict';
 
   var CHAT_LIMIT = 25;
-  var CHAR_LIMIT = 300;
+  var CHAR_LIMIT = 500;
 
   var auth = {
     userid: null,
