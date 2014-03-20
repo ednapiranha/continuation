@@ -3,7 +3,6 @@ define(['jquery', './base/transform', 'fingerprint', 'md5', 'moment', 'favico'],
   'use strict';
 
   var CHAT_LIMIT = 25;
-  var CHAR_LIMIT = 500;
 
   var auth = {
     userid: null,
@@ -25,7 +24,6 @@ define(['jquery', './base/transform', 'fingerprint', 'md5', 'moment', 'favico'],
   };
   var html = $('html');
   var body = $('body');
-  var counter = $('#counter');
   var footer = $('#footer');
   var channel = false;
   var isPosting = false;
@@ -169,8 +167,6 @@ define(['jquery', './base/transform', 'fingerprint', 'md5', 'moment', 'favico'],
       ev.preventDefault();
       composer.form.submit();
     }
-  }).on('keyup', function (ev) {
-    counter.text(CHAR_LIMIT - composer.message.val().length);
   }).on('submit', function (ev) {
     ev.preventDefault();
 
@@ -191,7 +187,7 @@ define(['jquery', './base/transform', 'fingerprint', 'md5', 'moment', 'favico'],
           canSend = true;
         }, 1000);
 
-        var submission = composer.inputs.reduce(function(data, input) {
+        var submission = composer.inputs.reduce(function (data, input) {
           return (data[input.name] = input.value, data);
         }, { picture: '' });
 
@@ -203,7 +199,6 @@ define(['jquery', './base/transform', 'fingerprint', 'md5', 'moment', 'favico'],
           composer.message.prop('readonly', false);
           composer.message.val('');
           composer.blocker.addClass('hidden');
-          counter.text(CHAR_LIMIT);
           isPosting = false;
         });
       }
@@ -221,7 +216,7 @@ define(['jquery', './base/transform', 'fingerprint', 'md5', 'moment', 'favico'],
   auth.channel = body.find('#channel').data('channel') || false;
 
   if (auth.channel) {
-    var joinChannel = function() {
+    var joinChannel = function () {
       socket.emit('join', {
         channel: auth.channel
       });

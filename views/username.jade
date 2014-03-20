@@ -6,4 +6,5 @@ block content
 
     form(method='post', action='/username')
       input(type='text', name='username', placeholder='Your name', required)
+      input(type='hidden', name='channel', value='#{channel}')
       button(type='submit') Join!
