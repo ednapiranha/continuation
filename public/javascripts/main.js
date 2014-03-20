@@ -221,15 +221,9 @@ define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'finge
   auth.channel = body.find('#channel').data('channel') || false;
 
   if (auth.channel && navigator.getMedia) {
-
-    var joinChannel = function() {
-      socket.emit('join', {
-        channel: auth.channel
-      });
-    };
-
-    joinChannel();
-    socket.on('connect', joinChannel);
+    socket.emit('join', {
+      channel: auth.channel
+    });
 
     var startStreaming = function() {
       gumhelper.startVideoStreaming(function (err, stream, videoElement, videoWidth, videoHeight) {
