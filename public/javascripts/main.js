@@ -231,36 +231,44 @@ define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'finge
     joinChannel();
     socket.on('connect', joinChannel);
 
-    gumhelper.startVideoStreaming(function (err, stream, videoElement, videoWidth, videoHeight) {
-      if (err) {
-        disableVideoMode();
-      } else {
-        var outWidth = 300;
-        var outHeight = 300;
-        var cropDimens = VideoShooter.getCropDimensions(
-          videoWidth, videoHeight, outWidth, outHeight);
-        var previewWidth = 101;
-        var previewHeight = 101;
-        var previewCrop = VideoShooter.getCropDimensions(
-          videoWidth, videoHeight, previewWidth, previewHeight);
+    var startStreaming = function() {
+      gumhelper.startVideoStreaming(function (err, stream, videoElement, videoWidth, videoHeight) {
+        if (err) {
+          disableVideoMode();
+        } else {
+          var outWidth = 300;
+          var outHeight = 300;
+          var cropDimens = VideoShooter.getCropDimensions(
+            videoWidth, videoHeight, outWidth, outHeight);
+          var previewWidth = 101;
+          var previewHeight = 101;
+          var previewCrop = VideoShooter.getCropDimensions(
+            videoWidth, videoHeight, previewWidth, previewHeight);
 
-        videoElement.width = outWidth + cropDimens.width;
-        videoElement.height = outHeight + cropDimens.height;
-        $(videoElement).css({
-          position: 'absolute',
-          width: previewWidth + previewCrop.width + 'px',
-          height: previewHeight + previewCrop.height + 'px',
-          left: -Math.floor(previewCrop.width / 2) + 'px',
-          top: -Math.floor(previewCrop.height / 2) + 'px'
-        });
+          $(videoElement).css({
+            position: 'absolute',
+            width: previewWidth + previewCrop.width + 'px',
+            height: previewHeight + previewCrop.height + 'px',
+            left: -Math.floor(previewCrop.width / 2) + 'px',
+            top: -Math.floor(previewCrop.height / 2) + 'px'
+          });
 
-        videoWrapper.prepend(videoElement);
-        videoElement.play();
+          videoWrapper.prepend(videoElement);
+          videoElement.play();
 
-        videoShooter = new VideoShooter(videoElement, outWidth, outHeight, videoWidth, videoHeight,
-          cropDimens);
-        composer.form.click();
-      }
+          videoShooter = new VideoShooter(videoElement, outWidth, outHeight,
+            videoWidth, videoHeight, cropDimens);
+          composer.form.click();
+        }
+      });
+    };
+
+    startStreaming();
+
+    $(window).on('orientationchange', function() {
+      gumhelper.stopVideoStreaming();
+      videoWrapper.empty();
+      startStreaming();
     });
   } else {
     disableVideoMode();
