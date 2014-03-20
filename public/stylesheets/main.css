@@ -54,25 +54,38 @@ body {
     background-color: #111;
 }
 
-body.info {
-    background-color: #eee;
-    background-image: none;
-    padding-top: 50px;
-}
-
 #wrapper.home {
+    color: #31dfff;
     padding: 20px;
+    text-align: center;
 }
 
 #wrapper.home h1 {
-    font-size: 2rem;
-    margin-bottom: 30px;
+    font-size: 3.5em;
+    margin-bottom: 50px;
+}
+
+#wrapper.home p {
+    font-size: 1.4rem;
+    line-height: 1.6rem;
 }
 
 #wrapper.home input {
-    font-size: 1.5rem;
-    margin-top: 10px;
+    background-color: #31dfff;
+    border: 0;
+    font-size: 1.4rem;
     padding: 5px;
+    width: 100px;
+}
+
+#wrapper.home button {
+    background-color: #eee;
+    border: 0;
+    color: #111;
+    font-size: 1.8rem;
+    margin: 40px 10px 10px;
+    padding: 8px 15px;
+    width: 200px;
 }
 
 .info .item {

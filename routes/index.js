@@ -34,37 +34,11 @@ module.exports = function (app, nconf, io) {
   });
 
   app.post('/channel', function (req, res, next) {
-    var postmark = require('postmark')(nconf.get('postmark_api_key'));
-
     diphenhydramine.getChats(req.body.channel, true, function (err, c) {
       if (err) {
         res.status(400);
         next(err);
       } else {
-        if (!accessIds[req.body.channel]) {
-          accessIds[req.body.channel] = uuid.v4();
-          req.session.accessId = accessIds[req.body.channel];
-
-          var link = nconf.get('domain') + ':' + nconf.get('authPort') + '/c/' +
-                     req.body.channel + '?admin=' + accessIds[req.body.channel];
-
-          postmark.send({
-            'From': nconf.get('email'),
-            'To': req.body.email,
-            'Subject': 'Here is your chat link!',
-            'HtmlBody': '<p>Here is the link to your temporary chat room <a href="' +
-            link +'">' + link + '</a></p>',
-            'TextBody': 'Here is the link to your temporary chat room ' + link,
-            'Attachments': []
-          }, function (err, success) {
-            if (err) {
-              throw new Error('Unable to send via postmark: ' + err.message);
-            } else {
-              console.info('Sent to postmark for delivery');
-            }
-          });
-        }
-
         res.redirect('/c/' + req.body.channel);
       }
     });
