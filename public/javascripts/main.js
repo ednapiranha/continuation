@@ -156,9 +156,7 @@ define(['jquery', './base/transform', 'fingerprint', 'md5', 'moment', 'favico'],
         // formatting, and therefore cannot trust a string attribute selector.
         return this.dataset.fingerprint === fingerprint;
       });
-      messages.waypoint('destroy').remove();
-
-      $.waypoints('refresh');
+      messages.remove();
     }
   });
 
