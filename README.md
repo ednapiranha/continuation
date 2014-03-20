@@ -6,4 +6,6 @@ Authentication-free chat
 
     npm install
     bower install
+    brew install redis
+    redis-server &
     npm start

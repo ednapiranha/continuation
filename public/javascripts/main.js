@@ -96,7 +96,8 @@ define(['jquery', './base/transform', 'fingerprint', 'md5', 'moment', 'favico'],
 
         var message = document.createElement('p');
         message.textContent = incoming.value.message;
-        message.innerHTML = transform(message.innerHTML);
+        message.innerHTML = transform(message.innerHTML).replace('&lt;b&gt;', '<b>')
+                                                        .replace('&lt;/b&gt;', '</b>');
         li.appendChild(message);
 
         var created = moment(new Date(incoming.value.created));

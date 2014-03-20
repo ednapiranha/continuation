@@ -32,7 +32,15 @@ var isLoggedIn = function (req, res, next) {
   }
 };
 
+var hasUsername = function (req, res, next) {
+  if (req.session.username) {
+    next();
+  } else {
+    res.redirect('/username?channel=' + req.params.channel);
+  }
+}
+
 // routes
-require('./routes')(app, isLoggedIn, nconf, io);
+require('./routes')(app, isLoggedIn, hasUsername, nconf, io);
 
 server.listen(process.env.PORT || nconf.get('port'));

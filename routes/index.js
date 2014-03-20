@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (app, isLoggedIn, nconf, io) {
+module.exports = function (app, isLoggedIn, hasUsername, nconf, io) {
   var crypto = require('crypto');
   var Diphenhydramine = require('diphenhydramine');
   var level = require('level');
@@ -33,49 +33,54 @@ module.exports = function (app, isLoggedIn, nconf, io) {
     res.render('index');
   });
 
+  app.get('/username', function (req, res) {
+    res.render('username', {
+      channel: req.query.channel
+    });
+  });
+
+  app.post('/username', function (req, res) {
+    req.session.username = req.body.username;
+    res.redirect('/c/' + req.body.channel);
+  });
+
   app.post('/channel', function (req, res, next) {
     var postmark = require('postmark')(nconf.get('postmark_api_key'));
+    var channel = uuid.v4();
 
-    diphenhydramine.getChats(req.body.channel, true, function (err, c) {
+    diphenhydramine.getChats(channel, true, function (err, c) {
       if (err) {
         res.status(400);
         next(err);
       } else {
-        if (!accessIds[req.body.channel]) {
-          accessIds[req.body.channel] = uuid.v4();
-          req.session.accessId = accessIds[req.body.channel];
+        req.session.accessId = channel;
 
-          var link = nconf.get('domain') + ':' + nconf.get('authPort') + '/c/' +
-                     req.body.channel + '?admin=' + accessIds[req.body.channel];
+        var link = nconf.get('domain') + ':' + nconf.get('authPort') + '/c/' +
+                   req.session.accessId;
 
-          postmark.send({
-            'From': nconf.get('email'),
-            'To': req.body.email,
-            'Subject': 'Here is your chat link!',
-            'HtmlBody': '<p>Here is the link to your chat room <a href="' +
-            link +'">' + link + '</a></p>',
-            'TextBody': 'Here is the link to your chat room ' + link,
-            'Attachments': []
-          }, function (err, success) {
-            if (err) {
-              throw new Error('Unable to send via postmark: ' + err.message);
-            } else {
-              req.session.username = req.body.username;
-              console.info('Sent to postmark for delivery');
-            }
-          });
-        }
+        postmark.send({
+          'From': nconf.get('email'),
+          'To': req.body.email,
+          'Subject': 'Here is your chat link!',
+          'HtmlBody': '<p>Here is the link to your chat room <a href="' +
+          link +'">' + link + '</a></p>',
+          'TextBody': 'Here is the link to your chat room ' + link,
+          'Attachments': []
+        }, function (err, success) {
+          if (err) {
+            throw new Error('Unable to send via postmark: ' + err.message);
+          } else {
+            req.session.username = req.body.username;
 
-        res.redirect('/c/' + req.body.channel);
+            res.redirect('/c/' + channel);
+            console.info('Sent to postmark for delivery');
+          }
+        });
       }
     });
   });
 
-  app.get('/c/:channel', isLoggedIn, function (req, res, next) {
-    if (req.query.admin && accessIds[req.params.channel] === req.query.admin) {
-      req.session.accessId = accessIds[req.params.channel];
-    }
-
+  app.get('/c/:channel', hasUsername, function (req, res, next) {
     diphenhydramine.getChats(req.params.channel, true, function (err, c) {
       if (err) {
         res.status(400);
@@ -123,7 +128,7 @@ module.exports = function (app, isLoggedIn, nconf, io) {
     var userId = getUserId(req.body.fingerprint, ip);
 
     if (userId === req.body.userid) {
-      addChat(req.params.channel, '<strong>' + req.session.username + '</strong>: ' +
+      addChat(req.params.channel, '<b>' + req.session.username + '</b>: ' +
               req.body.message, '', req.body.fingerprint, userId, ip, function (err, status) {
         if (err) {
           res.status(400);

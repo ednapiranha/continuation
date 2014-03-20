@@ -1,5 +1,6 @@
 // Module dependencies.
 module.exports = function(app, configurations, express) {
+  var RedisStore = require('connect-redis')(express);
   var nconf = require('nconf');
   var i18n = require('i18next');
   var maxAge = 24 * 60 * 60 * 1000 * 28;
@@ -28,7 +29,11 @@ module.exports = function(app, configurations, express) {
     }
     app.use(express.static(__dirname + '/public'));
     app.use(express.cookieParser());
-    app.use(express.session({ secret: nconf.get('session_secret') }));
+    app.use(express.session({
+      secret: nconf.get('session_secret'),
+      store: new RedisStore({ db: nconf.get('redis_db'), prefix: 'facespaces' }),
+      cookie: { maxAge: maxAge }
+    }));
     app.use(function (req, res, next) {
       res.locals.session = req.session;
       res.locals.csrf = csrf;
