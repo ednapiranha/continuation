@@ -13,6 +13,6 @@ block content
   #footer
     form(method='post', id='composer-form')
       .message-content
-        input(name='message', id='composer-message', class='input', maxlength='100', autocomplete='off', placeholder=t('messagePrompt'))
+        input(name='message', id='composer-message', class='input', maxlength='500', autocomplete='off', placeholder=t('messagePrompt'))
         input(type='hidden', name='_csrf', value='#{csrf}')
         #composer-blocker.hidden
