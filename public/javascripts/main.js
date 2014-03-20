@@ -189,7 +189,7 @@ define(['jquery', './base/transform', 'fingerprint', 'md5', 'moment', 'favico'],
 
         setTimeout(function () {
           canSend = true;
-        }, 3000);
+        }, 1000);
 
         var submission = composer.inputs.reduce(function(data, input) {
           return (data[input.name] = input.value, data);
