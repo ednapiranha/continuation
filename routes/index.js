@@ -46,7 +46,7 @@ module.exports = function (app, isLoggedIn, hasUsername, nconf, io) {
 
   app.post('/channel', function (req, res, next) {
     var postmark = require('postmark')(nconf.get('postmark_api_key'));
-    var channel = uuid.v4();
+    var channel = uuid.v4().replace(/[^\w+]/gi, '').toLowerCase();
 
     diphenhydramine.getChats(channel, true, function (err, c) {
       if (err) {
