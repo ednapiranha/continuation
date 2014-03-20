@@ -1,0 +1,9 @@
+extend layout
+
+block content
+  #wrapper.home
+    h1 Enter your name
+
+    form(method='post', action='/username')
+      input(type='text', name='username', placeholder='Your name', required)
+      button(type='submit') Join!
