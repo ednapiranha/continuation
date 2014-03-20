@@ -216,14 +216,9 @@ define(['jquery', './base/transform', 'fingerprint', 'md5', 'moment', 'favico'],
   auth.channel = body.find('#channel').data('channel') || false;
 
   if (auth.channel) {
-    var joinChannel = function () {
-      socket.emit('join', {
-        channel: auth.channel
-      });
-    };
-
-    joinChannel();
-    socket.on('connect', joinChannel);
+    socket.emit('join', {
+      channel: auth.channel
+    });
   }
 
   $(document).on(pageVisibilityChange, handleVisibilityChange);
