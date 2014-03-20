@@ -20,14 +20,15 @@
     "express": "~3.2.0",
     "jade": ">= 0.29.0",
     "nconf": ">= 0.6.7",
-    "diphenhydramine": "0.0.1",
+    "diphenhydramine": "0.0.3",
     "gravatar": "1.0.6",
     "socket.io": ">= 0.9.16",
     "crypto": "0.0.3",
     "level": ">= 0.10.0",
     "i18next": "~1.7.1",
     "postmark": "*",
-    "uuid": "*"
+    "uuid": "*",
+    "connect-redis": "~1.4.6"
   },
   "devDependencies": {
     "grunt": "~0.4.2",
