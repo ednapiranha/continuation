@@ -115,6 +115,10 @@ module.exports = function (app, nconf, io) {
     }
   });
 
+  var isInChannel = function(socket, channel) {
+    return io.sockets.manager.roomClients[socket.id]['/' + channel];
+  };
+
   io.sockets.on('connection', function (socket) {
     var ip = socket.handshake.address.address;
     if (socket.handshake.headers['x-forwarded-for']) {
@@ -122,6 +126,10 @@ module.exports = function (app, nconf, io) {
     }
 
     socket.on('join', function (data) {
+      if (!data.channel || isInChannel(socket, data.channel)) {
+        return;
+      }
+
       socket.join(data.channel);
 
       // Fire out an initial burst of images to the connected client, assuming there are any available

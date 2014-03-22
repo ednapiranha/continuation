@@ -17,13 +17,6 @@ io.configure(function () {
   io.set('log level', 1);
 });
 
-io.sockets.on('connection', function (socket) {
-  socket.on('join', function (data) {
-    console.log('socket join on ', data.channel);
-    socket.join(data.channel);
-  });
-});
-
 // routes
 require('./routes')(app, nconf, io);
 

@@ -224,11 +224,15 @@ define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'finge
     render(data.chat);
   });
 
-  auth.channel = body.find('#channel').data('channel') || false;
+  auth.channel = body.find('#channel').data('channel');
 
-  if (auth.channel && navigator.getMedia) {
-    socket.emit('join', {
-      channel: auth.channel
+  if (typeof auth.channel !== 'undefined' && navigator.getMedia) {
+    // this code should always run on the same event loop turn that the socket is told to connect,
+    // so it will always fire at least once on page load
+    socket.on('connect', function() {
+      socket.emit('join', {
+        channel: '' + auth.channel
+      });
     });
 
     var startStreaming = function() {
