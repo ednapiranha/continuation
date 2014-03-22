@@ -18,7 +18,7 @@ define([], function () {
       context.drawImage(videoElem,
         sourceX, sourceY, sourceWidth, sourceHeight,
         0, 0, canvas.width, canvas.height);
-      return canvas.toDataURL('image/jpeg', 0.4);
+      return canvas.toDataURL('image/jpeg', 0.85);
     };
   }
 
