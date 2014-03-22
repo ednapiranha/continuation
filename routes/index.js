@@ -45,21 +45,24 @@ module.exports = function (app, nconf, io) {
   });
 
   app.get('/c/:channel', function (req, res, next) {
-    if (req.query.admin && accessIds[req.params.channel] === req.query.admin) {
-      req.session.accessId = accessIds[req.params.channel];
-    }
+    var channel = req.params.channel.toString().replace(/[^\w+]/gi, '').toLowerCase();
 
-    diphenhydramine.getChats(req.params.channel, true, function (err, c) {
-      if (err) {
-        res.status(400);
-        next(err);
-      } else {
-        res.render('channel', {
-          channel: req.params.channel,
-          chats: c.chats
-        });
-      }
-    });
+    if (channel !== req.params.channel.toString().toLowerCase()) {
+      res.redirect('/c/' + channel);
+    } else {
+
+      diphenhydramine.getChats(req.params.channel, true, function (err, c) {
+        if (err) {
+          res.status(400);
+          next(err);
+        } else {
+          res.render('channel', {
+            channel: req.params.channel,
+            chats: c.chats
+          });
+        }
+      });
+    }
   });
 
   app.get('/ip', function (req, res) {
