@@ -131,6 +131,18 @@ define([], function() {
 
         return match[1] + template('http://www.reddit.com/r/' + subreddit, match[2]);
       }
+    },
+    facespace: {
+      pattern: /(\B|\s)(\/c\/(\w+))/g,
+      transformer: function (match) {
+        var channel = match[3];
+
+        if (!channel) {
+          return null;
+        }
+
+        return match[1] + template('http://facespac.es/c/' + channel, match[2]);
+      }
     }
   };
 

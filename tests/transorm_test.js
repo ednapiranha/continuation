@@ -46,7 +46,8 @@ valid = {
     //email
     'email+advancedtricky@example.com',
     'http://example.com/#fragment',
-    '#fragment'
+    '#fragment',
+    '/c/facespaces'
   ],
 
   expects: [
@@ -88,7 +89,8 @@ valid = {
     '<a href="http://test.com/@test" target="_blank">test.com/@test</a>',
     '<a href="mailto:email+advancedtricky@example.com" target="_blank">email+advancedtricky@example.com</a>',
     '<a href="http://example.com/#fragment" target="_blank">http://example.com/#fragment</a>',
-    '<a href="https://twitter.com/search?q=%23fragment&src=hash" target="_blank">#fragment</a>'
+    '<a href="https://twitter.com/search?q=%23fragment&src=hash" target="_blank">#fragment</a>',
+    '<a href="http://facespac.es/c/facespaces" target="_blank">/c/facespaces</a>'
   ]
 };
 
