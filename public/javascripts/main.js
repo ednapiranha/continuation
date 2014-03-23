@@ -226,7 +226,7 @@ define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'finge
 
   auth.channel = body.find('#channel').data('channel');
 
-  if (typeof auth.channel !== 'undefined' && navigator.getMedia) {
+  if (typeof auth.channel !== 'undefined') {
     // this code should always run on the same event loop turn that the socket is told to connect,
     // so it will always fire at least once on page load
     socket.on('connect', function() {
@@ -234,7 +234,9 @@ define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'finge
         channel: '' + auth.channel
       });
     });
+  }
 
+  if (navigator.getMedia) {
     var startStreaming = function() {
       gumhelper.startVideoStreaming(function (err, stream, videoElement, videoWidth, videoHeight) {
         if (err) {
