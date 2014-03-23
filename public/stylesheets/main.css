@@ -416,7 +416,7 @@ ul li.on {
     }
 
     #wrapper.home p span {
-        font-size: 1rem;
+        font-size: 1.2rem;
     }
 
     .input {
@@ -431,6 +431,11 @@ ul li.on {
 }
 
 @media only screen and (max-width: 460px) {
+    #wrapper.home p span {
+        display: block;
+        line-height: 1.8rem;
+    }
+
     #counter {
         display: none;
     }
