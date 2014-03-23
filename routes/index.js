@@ -37,7 +37,7 @@ module.exports = function (app, nconf, io) {
     diphenhydramine.getChats(req.body.channel, true, function (err, c) {
       if (err) {
         res.status(400);
-        next(err);
+        res.render('400');
       } else {
         res.redirect('/c/' + req.body.channel);
       }
@@ -46,7 +46,7 @@ module.exports = function (app, nconf, io) {
 
   app.get('/c/:channel', function (req, res, next) {
     var channel = req.params.channel.toString().replace(/[^\w+]/gi, '').toLowerCase();
-
+    console.log(channel)
     if (channel !== req.params.channel.toString().toLowerCase()) {
       res.redirect('/c/' + channel);
     } else {
@@ -54,7 +54,7 @@ module.exports = function (app, nconf, io) {
       diphenhydramine.getChats(req.params.channel, true, function (err, c) {
         if (err) {
           res.status(400);
-          next(err);
+          res.render('400');
         } else {
           res.render('channel', {
             channel: req.params.channel,

@@ -56,6 +56,11 @@ module.exports = function(app, configurations, express) {
       res.render('403', { url: req.url, layout: false });
       return;
     });
+    app.use(function (req, res, next) {
+      res.status(400);
+      res.render('400', { url: req.url, layout: false });
+      return;
+    });
   });
 
   app.configure('development, test', function() {
