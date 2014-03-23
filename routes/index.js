@@ -46,7 +46,7 @@ module.exports = function (app, nconf, io) {
 
   app.get('/c/:channel', function (req, res, next) {
     var channel = req.params.channel.toString().replace(/[^\w+]/gi, '').toLowerCase();
-    console.log(channel)
+
     if (channel !== req.params.channel.toString().toLowerCase()) {
       res.redirect('/c/' + channel);
     } else {
