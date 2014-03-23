@@ -236,7 +236,7 @@ define(['jquery', 'gumhelper', './base/transform', './base/videoShooter', 'finge
     });
   }
 
-  if (navigator.getMedia) {
+  if (typeof auth.channel !== 'undefined' && navigator.getMedia) {
     var startStreaming = function() {
       gumhelper.startVideoStreaming(function (err, stream, videoElement, videoWidth, videoHeight) {
         if (err) {
