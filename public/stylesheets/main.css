@@ -237,6 +237,7 @@ input::-webkit-input-placeholder {
     margin: 51px auto 99px auto;
     padding: 10px;
     position: relative;
+    width: 1208px;
 }
 
 #chat-container.lean {
@@ -394,6 +395,12 @@ ul li.on {
     width: 1px;
 }
 
+@media only screen and (max-width: 1207px) {
+    #chat-container {
+        width: 906px;
+    }
+}
+
 @media only screen and (max-width: 1150px) {
     .input {
         width: 75%;
@@ -403,6 +410,12 @@ ul li.on {
 @media only screen and (max-width: 945px) {
     .input {
         width: 70%;
+    }
+}
+
+@media only screen and (max-width: 905px) {
+    #chat-container {
+        width: 604px;
     }
 }
 
@@ -427,6 +440,12 @@ ul li.on {
 @media only screen and (max-width: 655px) {
     .input {
         width: 60%;
+    }
+}
+
+@media only screen and (max-width: 603px) {
+    #chat-container {
+        width: 302px;
     }
 }
 
