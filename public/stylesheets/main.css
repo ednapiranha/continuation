@@ -230,11 +230,16 @@ input::-webkit-input-placeholder {
 
 .input:focus { color: #fff; }
 
+#chat-list {
+    float: left;
+    margin-bottom: 99px;
+}
+
 #chat-container {
     display: block;
     max-width: 1208px;
     min-width: 302px;
-    margin: 51px auto 99px auto;
+    margin: 51px auto 0 auto;
     padding: 10px;
     position: relative;
     width: 1208px;
